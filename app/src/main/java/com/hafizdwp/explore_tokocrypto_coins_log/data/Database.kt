@@ -3,16 +3,21 @@ package com.hafizdwp.explore_tokocrypto_coins_log.data
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.hafizdwp.explore_tokocrypto_coins_log.data.local.dao.CoinDao
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.dao.SymbolDao
+import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Coin
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Symbol
 
 @androidx.room.Database(
         entities = [
-            Symbol::class],
-        version = 1)
+            Symbol::class,
+            Coin::class],
+        version = 1
+)
 abstract class Database : RoomDatabase() {
 
     abstract fun symbolDao(): SymbolDao
+    abstract fun coinDao(): CoinDao
 
     companion object {
         @Volatile
@@ -25,7 +30,7 @@ abstract class Database : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                         context.applicationContext,
                         Database::class.java,
-                        "database"
+                        "crypto.db"
                 )
                         // Wipes and rebuilds instead of migrating if no Migration object.
                         // Migration is not part of this codelab.

@@ -8,7 +8,10 @@ object Endpoint {
     const val BASE_URL = "api.github.com"
     const val GITHUB = "users/hafizdwp"
 
-    const val API_KEY = "8f15bfc1-e296-4ef1-85e5-8fec517ccc40"
+
     private const val BASE_URL_TOKOCRYPTO = "https://www.tokocrypto.com/"
     const val TKO_ALL_SYMBOLS = "${BASE_URL_TOKOCRYPTO}open/v1/common/symbols"
+
+    private const val BASE_URL_COINGECKO = "https://api.coingecko.com/api/v3/"
+    const val CG_COINS_MARKET = "${BASE_URL_COINGECKO}coins/markets"
 }

@@ -1,8 +1,8 @@
 package com.hafizdwp.explore_tokocrypto_coins_log.data
 
+import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Coin
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Symbol
-import com.hafizdwp.explore_tokocrypto_coins_log.data.remote.response.BaseListResponse
-import com.hafizdwp.explore_tokocrypto_coins_log.data.remote.response.ExchangeResponse
+import com.hafizdwp.explore_tokocrypto_coins_log.log
 
 /**
  * @author hafizdwp
@@ -18,6 +18,16 @@ class Repository(private val remoteDataSource: RemoteDataSource,
 
         localDataSource.saveSymbols(convertedSymbols)
         return localDataSource.getSymbols()
+    }
+
+    suspend fun getCoinsBySymbols(symbols: List<String>): List<Coin> {
+        val remoteResponse = remoteDataSource.getCoinsBySymbols(symbols)
+        log("remoteResponse: $remoteResponse")
+        val convertedCoins = RepositoryExt.convertToCoinTables(remoteResponse)
+        log("convertedCoins: $remoteResponse")
+
+        localDataSource.saveCoins(convertedCoins)
+        return localDataSource.getCoins()
     }
 
 

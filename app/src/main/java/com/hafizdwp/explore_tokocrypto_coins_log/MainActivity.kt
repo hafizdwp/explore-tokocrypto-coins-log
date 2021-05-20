@@ -3,6 +3,7 @@ package com.hafizdwp.explore_tokocrypto_coins_log
 import android.os.Bundle
 import com.hafizdwp.explore_tokocrypto_coins_log.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
 
 class MainActivity : BaseActivity() {
 
@@ -31,14 +32,14 @@ class MainActivity : BaseActivity() {
 //        })
 
         btn_get.setOnClickListener {
-            viewModel.getAllSymbols()
+            viewModel.getAllCoins()
         }
         observe(viewModel)
     }
 
     fun observe(viewModel: MainViewModel) {
         viewModel.apply {
-            randomFact.observe {
+            coins.observe {
                 text.text = it.toString()
             }
         }

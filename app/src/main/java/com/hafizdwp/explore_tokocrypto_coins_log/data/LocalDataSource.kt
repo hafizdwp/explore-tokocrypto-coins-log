@@ -1,5 +1,6 @@
 package com.hafizdwp.explore_tokocrypto_coins_log.data
 
+import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Coin
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Symbol
 
 /**
@@ -14,6 +15,14 @@ class LocalDataSource(private val database: Database) {
 
     suspend fun getSymbols(): List<Symbol> {
         return database.symbolDao().getAll()
+    }
+
+    suspend fun saveCoins(list: List<Coin>) {
+        database.coinDao().insert(list)
+    }
+
+    suspend fun getCoins(): List<Coin> {
+        return database.coinDao().getAll()
     }
 
     companion object {
