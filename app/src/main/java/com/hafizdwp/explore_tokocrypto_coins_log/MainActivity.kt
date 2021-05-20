@@ -38,6 +38,8 @@ class MainActivity : BaseActivity() {
 //        }
 
         observe(viewModel)
+
+//        viewModel.getExchangeRates()
         viewModel.getAllCoins()
 
         mainAdapter = MainAdapter()
@@ -51,7 +53,10 @@ class MainActivity : BaseActivity() {
     fun observe(viewModel: MainViewModel) {
         viewModel.apply {
             coins.observe {
-                mainAdapter.updateCoins(it ?: arrayListOf())
+                mainAdapter.updateCoins(
+                        coins = it?.first ?: arrayListOf(),
+                        idrPrice = it?.second ?: 0.0
+                )
             }
         }
     }

@@ -2,6 +2,7 @@ package com.hafizdwp.explore_tokocrypto_coins_log.data
 
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Coin
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Symbol
+import com.hafizdwp.explore_tokocrypto_coins_log.data.remote.response.ExchangeRatesResponse
 
 /**
  * @author hafizdwp
@@ -9,6 +10,10 @@ import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Symbol
  **/
 class Repository(private val remoteDataSource: RemoteDataSource,
                  private val localDataSource: LocalDataSource) {
+
+    suspend fun getExchangeRates(): ExchangeRatesResponse {
+        return remoteDataSource.getExchangeRates()
+    }
 
     suspend fun getAllSymbols(): List<Symbol> {
         val remoteResponse = remoteDataSource.getAllSymbols()

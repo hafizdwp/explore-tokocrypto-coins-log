@@ -1,9 +1,11 @@
 package com.hafizdwp.explore_tokocrypto_coins_log.data
 
 import com.hafizdwp.explore_tokocrypto_coins_log.data.remote.api.CoingeckoApi
+import com.hafizdwp.explore_tokocrypto_coins_log.data.remote.api.OpenExchangeApi
 import com.hafizdwp.explore_tokocrypto_coins_log.data.remote.api.TokocryptoApi
 import com.hafizdwp.explore_tokocrypto_coins_log.data.remote.response.BaseListResponse
 import com.hafizdwp.explore_tokocrypto_coins_log.data.remote.response.CoinResponse
+import com.hafizdwp.explore_tokocrypto_coins_log.data.remote.response.ExchangeRatesResponse
 import com.hafizdwp.explore_tokocrypto_coins_log.data.remote.response.ExchangeResponse
 import io.ktor.client.*
 
@@ -15,6 +17,12 @@ class RemoteDataSource(api: HttpClient) {
 
     private val tokocryptoApi by lazy { TokocryptoApi.getInstance(api) }
     private val coingeckoApi by lazy { CoingeckoApi.getInstance(api) }
+    private val openExchangeApi by lazy { OpenExchangeApi.getInstance(api) }
+
+
+    suspend fun getExchangeRates(): ExchangeRatesResponse {
+        return openExchangeApi.getExchangeRates()
+    }
 
     suspend fun getAllSymbols(): BaseListResponse<ExchangeResponse> {
         return tokocryptoApi.getAllSymbols()

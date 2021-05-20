@@ -17,8 +17,12 @@ import kotlinx.coroutines.withContext
  **/
 class MainViewModel(private val repository: Repository) : BaseViewModel() {
 
-    private val _coins = MutableLiveData<List<Coin>>()
-    val coins: LiveData<List<Coin>>
+    private val _idrPrice = MutableLiveData<Double>()
+    val idrPrice: LiveData<Double>
+        get() = _idrPrice
+
+    private val _coins = MutableLiveData<Pair<List<Coin>, Double>>()
+    val coins: LiveData<Pair<List<Coin>, Double>>
         get() = _coins
 
 
@@ -29,6 +33,7 @@ class MainViewModel(private val repository: Repository) : BaseViewModel() {
 //            val coins: List<Coin> = asyncAwait { repository.getCoinsBySymbols(stringSymbols) }
 
 
+            // Coins
             val listCoin = arrayListOf<Coin>()
             val stringSymbols = convertSymbolsToString(listSymbol)
             val coins: List<Coin> = asyncAwait { repository.getCoinsBySymbols(stringSymbols) }
@@ -38,10 +43,23 @@ class MainViewModel(private val repository: Repository) : BaseViewModel() {
 //            }
 
 //            _coins.value = listCoin.sortedBy { it.name }
-            _coins.value = coins.sortedBy { it.name }
+
+            // Idr price
+            val response = asyncAwait { repository.getExchangeRates() }
+            _idrPrice.value = response.rates.IDR
+
+            // Post value
+            _coins.value = Pair(coins.sortedBy { it.symbol }, idrPrice.value ?: 0.0)
 
         } catch (e: Exception) {
             logError(e.toString())
+        }
+    }
+
+    fun getExchangeRates() = viewModelScope.launch {
+        try {
+
+        } catch (e: Exception) {
         }
     }
 
