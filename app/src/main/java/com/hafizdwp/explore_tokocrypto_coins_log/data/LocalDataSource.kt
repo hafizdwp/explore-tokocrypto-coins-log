@@ -17,12 +17,20 @@ class LocalDataSource(private val database: Database) {
         return database.symbolDao().getAll()
     }
 
+    suspend fun deleteSymbols() {
+        database.symbolDao().nuke()
+    }
+
     suspend fun saveCoins(list: List<Coin>) {
         database.coinDao().insert(list)
     }
 
     suspend fun getCoins(): List<Coin> {
         return database.coinDao().getAll()
+    }
+
+    suspend fun deleteCoins() {
+        database.coinDao().nuke()
     }
 
     companion object {

@@ -18,10 +18,10 @@ object RepositoryExt {
     suspend fun convertToSymbolTables(filteredUsdtSymbols: List<ExchangeResponse>): List<Symbol> {
         return withContext(Dispatchers.Default) {
             val filteredList = arrayListOf<Symbol>()
-            filteredUsdtSymbols.forEach {
-                val symbol = Symbol(name = it.baseAsset.toString().toLowerCase(Locale.ROOT))
-                filteredList.add(symbol)
-            }
+//            filteredUsdtSymbols.forEach {
+//                val symbol = Symbol(name = it.baseAsset.toString().toLowerCase(Locale.ROOT))
+//                filteredList.add(symbol)
+//            }
 
             filteredList
         }

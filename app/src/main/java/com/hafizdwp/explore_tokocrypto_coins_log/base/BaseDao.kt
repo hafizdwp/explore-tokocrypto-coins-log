@@ -14,8 +14,8 @@ interface BaseDao<T> {
      * @param obj the object to be inserted.
      * @return The SQLite row id
      */
-//    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(obj: T): Long
 
     /**
@@ -24,8 +24,8 @@ interface BaseDao<T> {
      * @param objList the objects to be inserted.
      * @return The SQLite row ids
      */
-//    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(objList: List<T>): List<Long>
 
     /**

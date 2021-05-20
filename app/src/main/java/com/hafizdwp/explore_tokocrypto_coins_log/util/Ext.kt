@@ -7,14 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
-import com.google.gson.Gson
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.hafizdwp.explore_tokocrypto_coins_log.app.MyApplication
 import com.hafizdwp.explore_tokocrypto_coins_log.data.ViewModelFactory
 
 
 inline fun <reified T : ViewModel> AppCompatActivity.obtainViewModel() =
-    ViewModelProviders.of(this, ViewModelFactory.getInstance(application)).get(T::class.java)
+    ViewModelProviders.of(this, ViewModelFactory.getInstance(MyApplication.getInstance())).get(T::class.java)
 
 inline fun <reified VM : ViewModel> Fragment.obtainViewModel() =
     ViewModelProviders.of(requireActivity(), ViewModelFactory.getInstance(requireActivity().application)).get(VM::class.java)
@@ -94,4 +97,8 @@ fun Fragment.toast(msg: String?) {
 fun Fragment.toastSpammable(msg: String?,
                             length: Int = Toast.LENGTH_LONG) {
     (requireActivity() as? AppCompatActivity)?.toastSpammable(msg, length)
+}
+
+fun RecyclerView.defaultDivider(): DividerItemDecoration {
+    return DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
 }

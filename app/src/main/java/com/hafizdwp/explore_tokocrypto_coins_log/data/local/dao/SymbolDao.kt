@@ -15,4 +15,7 @@ abstract class SymbolDao : BaseDao<Symbol> {
 
     @Query("SELECT * FROM table_symbol")
     abstract suspend fun getAll(): List<Symbol>
+
+    @Query("DELETE FROM table_symbol")
+    abstract suspend fun nuke()
 }

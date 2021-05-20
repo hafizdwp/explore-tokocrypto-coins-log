@@ -1,17 +1,19 @@
 package com.hafizdwp.explore_tokocrypto_coins_log
 
 import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hafizdwp.explore_tokocrypto_coins_log.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.Dispatchers
 
 class MainActivity : BaseActivity() {
+
+    lateinit var mainAdapter: MainAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val viewModel = obtainViewModel<MainViewModel>()
+        val viewModel by lazy { obtainViewModel<MainViewModel>() }
 
 //        viewModel.start()
 //        viewModel.print()
@@ -31,16 +33,25 @@ class MainActivity : BaseActivity() {
 //            }
 //        })
 
-        btn_get.setOnClickListener {
-            viewModel.getAllCoins()
-        }
+        //        btn_get.setOnClickListener {
+//            viewModel.getAllCoins()
+//        }
+
         observe(viewModel)
+        viewModel.getAllCoins()
+
+        mainAdapter = MainAdapter()
+        recycler_view.apply {
+            adapter = mainAdapter
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            addItemDecoration(defaultDivider())
+        }
     }
 
     fun observe(viewModel: MainViewModel) {
         viewModel.apply {
             coins.observe {
-                text.text = it.toString()
+                mainAdapter.updateCoins(it ?: arrayListOf())
             }
         }
     }

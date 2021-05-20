@@ -15,4 +15,7 @@ abstract class CoinDao : BaseDao<Coin> {
 
     @Query("SELECT * FROM table_coin")
     abstract suspend fun getAll(): List<Coin>
+
+    @Query("DELETE FROM table_coin")
+    abstract suspend fun nuke()
 }

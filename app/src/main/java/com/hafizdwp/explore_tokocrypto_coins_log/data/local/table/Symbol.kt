@@ -10,7 +10,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "table_symbol")
 data class Symbol(
-        @PrimaryKey(autoGenerate = true)
-        var id: Int? = null,
-        var name: String
+        @PrimaryKey
+        var id: String
 )
