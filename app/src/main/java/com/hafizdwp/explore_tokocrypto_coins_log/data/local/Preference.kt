@@ -4,6 +4,8 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.core.content.edit
 import com.hafizdwp.explore_tokocrypto_coins_log.app.MyApplication
+import com.hafizdwp.explore_tokocrypto_coins_log.util.fromJson
+import com.hafizdwp.explore_tokocrypto_coins_log.util.toJson
 
 /**
  * @author hafizdwp
@@ -35,9 +37,10 @@ class Preference {
     /// ============================================================================================
     /// Keys
 
-    private val KEY_CACHE_TIME = "key_cache_time"
     private val KEY_NIGHT_MODE = "key_night_mode"
     private val KEY_IDR_RATE = "key_idr_rate"
+    private val KEY_GLOBAL_CACHE = "key_global_cache"
+    private val KEY_MAP_CACHE = "key_map_cache"
 
 
     /// ============================================================================================
@@ -45,13 +48,19 @@ class Preference {
 
     var nightMode: Boolean
         get() = prefs.getBoolean(KEY_NIGHT_MODE, false)
-        set(isNightMode) = prefs.edit { putBoolean(KEY_NIGHT_MODE, isNightMode) }
+        set(value) = prefs.edit { putBoolean(KEY_NIGHT_MODE, value) }
 
     var idrRate: Double
         get() = prefs.getDouble(KEY_IDR_RATE, 0.0)
-        set(newIdrRate) = prefs.edit { putDouble(KEY_IDR_RATE, newIdrRate) }
+        set(value) = prefs.edit { putDouble(KEY_IDR_RATE, value) }
 
-    var lastCache: Long
-        get() = prefs.getLong(KEY_CACHE_TIME, System.currentTimeMillis())
-        set(newCacheTime) = prefs.edit { putLong(KEY_CACHE_TIME, newCacheTime) }
+    var globalCache: Long
+        get() = prefs.getLong(KEY_GLOBAL_CACHE, 0)
+        set(value) = prefs.edit { putLong(KEY_GLOBAL_CACHE, value) }
+
+    var mapCache: HashMap<String, Boolean>?
+        get() = prefs.getString(KEY_MAP_CACHE, "")?.fromJson()
+        set(value) {
+            prefs.edit { putString(KEY_MAP_CACHE, value.toJson()) }
+        }
 }

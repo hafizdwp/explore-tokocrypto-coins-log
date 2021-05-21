@@ -23,17 +23,20 @@ class Repository(private val remote: RemoteDataSource,
     }
 
     suspend fun getIdrRate(refresh: Boolean): Double {
-        if ((local.getIdrRate() == 0.0 || refresh) || local.isCacheExpires()) {
-            getRemoteIdrRate()
+        val tag = ::getIdrRate.name
+        if (local.getIdrRate() == 0.0
+                || local.isCacheExpires(tag)
+                || refresh) {
+            getRemoteIdrRate(tag)
         }
 
         return local.getIdrRate()
     }
 
-    private suspend fun getRemoteIdrRate() {
+    private suspend fun getRemoteIdrRate(tag: String) {
         val rateResponse = remote.getExchangeRates()
 
-        local.saveLastCache(System.currentTimeMillis())
+        local.saveMapCache(tag)
         local.saveIdrRate(rateResponse.rates.IDR)
     }
 
@@ -48,14 +51,17 @@ class Repository(private val remote: RemoteDataSource,
 //    }
 
     suspend fun getCoinsBySymbols(symbols: List<String>, idrRate: Double, refresh: Boolean): List<Coin> {
-        if ((local.getCoins().isEmpty() || refresh) || local.isCacheExpires()) {
-            getRemoteCoinsBySymbols(symbols, idrRate)
+        val tag = ::getCoinsBySymbols.name
+        if (local.getCoins().isEmpty()
+                || local.isCacheExpires(tag)
+                || refresh) {
+            getRemoteCoinsBySymbols(symbols, idrRate, tag)
         }
 
         return local.getCoins()
     }
 
-    private suspend fun getRemoteCoinsBySymbols(symbols: List<String>, idrRate: Double) {
+    private suspend fun getRemoteCoinsBySymbols(symbols: List<String>, idrRate: Double, tag: String) {
         val coinResponses = remote.getCoinsBySymbols(symbols)
         val coinEntities = coinResponses.map {
             Coin(symbol = it.symbol,
@@ -65,7 +71,7 @@ class Repository(private val remote: RemoteDataSource,
                     current_price_idr = it.current_price * idrRate)
         }
 
-        local.saveLastCache(System.currentTimeMillis())
+        local.saveMapCache(tag)
         local.saveCoins(coinEntities)
     }
 

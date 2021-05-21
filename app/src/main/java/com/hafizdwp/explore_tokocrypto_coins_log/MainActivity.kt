@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hafizdwp.explore_tokocrypto_coins_log.base.BaseActivity
+import com.hafizdwp.explore_tokocrypto_coins_log.data.local.Preference
 import com.hafizdwp.explore_tokocrypto_coins_log.util.defaultDivider
 import com.hafizdwp.explore_tokocrypto_coins_log.util.obtainViewModel
 import kotlinx.android.synthetic.main.activity_main.*

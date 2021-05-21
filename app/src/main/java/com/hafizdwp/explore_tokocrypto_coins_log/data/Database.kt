@@ -3,21 +3,25 @@ package com.hafizdwp.explore_tokocrypto_coins_log.data
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.hafizdwp.explore_tokocrypto_coins_log.data.local.dao.CacheMapDao
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.dao.CoinDao
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.dao.SymbolDao
+import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.CacheMap
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Coin
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Symbol
 
 @androidx.room.Database(
         entities = [
             Symbol::class,
-            Coin::class],
+            Coin::class,
+            CacheMap::class],
         version = 1
 )
 abstract class Database : RoomDatabase() {
 
     abstract fun symbolDao(): SymbolDao
     abstract fun coinDao(): CoinDao
+    abstract fun cacheMapDao(): CacheMapDao
 
     companion object {
         @Volatile

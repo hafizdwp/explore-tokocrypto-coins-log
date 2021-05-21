@@ -1,9 +1,11 @@
 package com.hafizdwp.explore_tokocrypto_coins_log.data
 
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.Preference
+import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.CacheMap
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Coin
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Symbol
 import com.hafizdwp.explore_tokocrypto_coins_log.util.log
+import com.hafizdwp.explore_tokocrypto_coins_log.util.logError
 
 /**
  * @author hafizdwp
@@ -68,19 +70,44 @@ class LocalDataSource(private val database: Database,
         pref.idrRate = idrRate
     }
 
-    fun saveLastCache(mill: Long) {
-        pref.lastCache = mill
+    suspend fun saveMapCache(tag: String) {
+        var cacheMap = database.cacheMapDao().getByTag(tag)
+        if (cacheMap != null) {
+            cacheMap.isExpired = false
+            database.cacheMapDao().update(cacheMap)
+        } else {
+            cacheMap = CacheMap(tag = tag, isExpired = false)
+            database.cacheMapDao().insert(cacheMap)
+        }
     }
 
-    fun isCacheExpires(): Boolean {
+    suspend fun isCacheExpires(tag: String): Boolean {
         val now = System.currentTimeMillis()
-        val cacheTime = pref.lastCache
+        val globalCache = pref.globalCache
 
-        log("""
-            isCacheExpires...
-            cache limit: $CACHE_LIMIT
-            calculation: ${now - cacheTime} therefor ${now - cacheTime > CACHE_LIMIT}
-        """.trimIndent())
-        return now - cacheTime > CACHE_LIMIT
+        val isGlobalCacheExpired = globalCache == 0L || (now - globalCache > CACHE_LIMIT)
+        log("isGlobalCacheExpired: $isGlobalCacheExpired")
+        log("CACHE LIMIT: $CACHE_LIMIT")
+        log("difference: ${now - globalCache}")
+        return if (isGlobalCacheExpired) {
+            logError("globalcache is expired. assigning new global cache, and refresh map caches")
+            pref.globalCache = System.currentTimeMillis()
+
+            val currentCacheMap = database.cacheMapDao().getAll()
+            val expiredCacheMaps = currentCacheMap.map {
+                CacheMap(tag = it.tag, isExpired = true)
+            }
+
+            database.cacheMapDao().nuke()
+            database.cacheMapDao().insert(expiredCacheMaps)
+
+            true
+        } else {
+            log("global cache is not expired. checking tags ...")
+            val cacheByTag = database.cacheMapDao().getByTag(tag)
+            log("is tag expired: $cacheByTag")
+
+            cacheByTag?.isExpired == true
+        }
     }
 }
