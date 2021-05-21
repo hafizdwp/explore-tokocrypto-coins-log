@@ -15,4 +15,5 @@ data class Coin(
     var name: String,
     var image: String,
     var current_price: Double,
+    var current_price_idr: Double
 )

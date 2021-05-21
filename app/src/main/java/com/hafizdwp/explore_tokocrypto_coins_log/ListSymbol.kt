@@ -7,7 +7,7 @@ import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Symbol
  * 21/05/2021
  **/
 
-val listSymbol = arrayListOf(
+val listSymbol: List<String> = arrayListOf(
         Symbol("tokocrypto"),
         Symbol("vechain"),
         Symbol("ethereum"),
@@ -97,4 +97,4 @@ val listSymbol = arrayListOf(
         Symbol("yearn-finance"),
         Symbol("yfii-finance"),
         Symbol("0x"),
-)
+).map { it.id }

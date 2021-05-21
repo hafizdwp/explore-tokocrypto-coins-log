@@ -26,8 +26,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun applyNightMode() {
         val pref = Preference.getInstance()
-        val isNightMode = pref.getBoolean(Preference.KEY_NIGHT_MODE, false)
-        log("isNightMOde: $isNightMode")
+        val isNightMode = pref.nightMode
         if (isNightMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {

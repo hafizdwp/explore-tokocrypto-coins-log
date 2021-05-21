@@ -23,8 +23,6 @@ class MainActivity : BaseActivity() {
         viewModel = obtainViewModel()
         observe(viewModel)
 
-        viewModel.getAllCoins()
-
         mainAdapter = MainAdapter()
         recycler_view.apply {
             adapter = mainAdapter
@@ -33,8 +31,13 @@ class MainActivity : BaseActivity() {
         }
 
         swipe_refresh.setOnRefreshListener {
-            viewModel.getAllCoins()
+            viewModel.getAllCoins(true)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAllCoins()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -60,10 +63,7 @@ class MainActivity : BaseActivity() {
     fun observe(viewModel: MainViewModel) {
         viewModel.apply {
             coins.observe {
-                mainAdapter.updateCoins(
-                        coins = it?.first ?: arrayListOf(),
-                        idrPrice = it?.second ?: 0.0
-                )
+                mainAdapter.updateCoins(it ?: arrayListOf())
             }
 
             swipe.observe {

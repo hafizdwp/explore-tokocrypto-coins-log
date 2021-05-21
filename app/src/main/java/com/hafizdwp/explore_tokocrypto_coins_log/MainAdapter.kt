@@ -17,14 +17,11 @@ import java.util.*
 class MainAdapter() : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
     private val coins = arrayListOf<Coin>()
-    private var idrPrice: Double = 0.0
 
 
-    fun updateCoins(coins: List<Coin>,
-                    idrPrice: Double) {
+    fun updateCoins(coins: List<Coin>) {
         this.coins.clear()
         this.coins.addAll(coins)
-        this.idrPrice = idrPrice
 
         notifyDataSetChanged()
     }
@@ -35,30 +32,31 @@ class MainAdapter() : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(coins[position], idrPrice)
+        holder.bind(coins[position])
     }
 
     override fun getItemCount(): Int {
-        return coins.size
+//        return coins.size
+        return if (coins.size > 3) 3
+        else coins.size
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(coin: Coin, idrPrice: Double) {
+        fun bind(coin: Coin) {
             itemView.apply {
+                Picasso.get().load(coin.image)
+                        .into(img_icon)
+
                 text_coin_symbol.text = coin.symbol.toUpperCase(Locale.ROOT)
                 text_coin_name.text = coin.name
                 text_price.text = coin.current_price.toString()
 
-                Picasso.get().load(coin.image)
-                        .into(img_icon)
-
-                val format = NumberFormat.getInstance()
-                format.maximumFractionDigits = 0
-                format.currency = Currency.getInstance("IDR")
-
-                val rupiahPrice = coin.current_price * idrPrice
-                val rupiahFinal = format.format(rupiahPrice)
+                val format = NumberFormat.getInstance().apply {
+                    maximumFractionDigits = 0
+                    currency = Currency.getInstance("IDR")
+                }
+                val rupiahFinal = format.format(coin.current_price_idr)
 
                 text_price_rupiah.text = "Rp $rupiahFinal"
             }
