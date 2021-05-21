@@ -1,5 +1,6 @@
 package com.hafizdwp.explore_tokocrypto_coins_log.data
 
+import com.hafizdwp.explore_tokocrypto_coins_log.data.local.Preference
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Coin
 import com.hafizdwp.explore_tokocrypto_coins_log.data.local.table.Symbol
 import com.hafizdwp.explore_tokocrypto_coins_log.data.remote.response.ExchangeRatesResponse
@@ -10,6 +11,19 @@ import com.hafizdwp.explore_tokocrypto_coins_log.data.remote.response.ExchangeRa
  **/
 class Repository(private val remoteDataSource: RemoteDataSource,
                  private val localDataSource: LocalDataSource) {
+
+    companion object {
+        private var instance: Repository? = null
+
+        @JvmStatic
+        fun getInstance(rds: RemoteDataSource, lds: LocalDataSource): Repository {
+            return instance ?: synchronized(Repository::class.java) {
+                instance ?: Repository(rds, lds).also {
+                    instance = it
+                }
+            }
+        }
+    }
 
     suspend fun getExchangeRates(): ExchangeRatesResponse {
         return remoteDataSource.getExchangeRates()
@@ -34,17 +48,11 @@ class Repository(private val remoteDataSource: RemoteDataSource,
         return localDataSource.getCoins()
     }
 
+    fun getNightMode(): Boolean {
+        return localDataSource.getNightMode()
+    }
 
-    companion object {
-        private var instance: Repository? = null
-
-        @JvmStatic
-        fun getInstance(rds: RemoteDataSource, lds: LocalDataSource): Repository {
-            return instance ?: synchronized(Repository::class.java) {
-                instance ?: Repository(rds, lds).also {
-                    instance = it
-                }
-            }
-        }
+    fun saveNightMode(isNightMode: Boolean) {
+        localDataSource.saveNightMode(isNightMode)
     }
 }

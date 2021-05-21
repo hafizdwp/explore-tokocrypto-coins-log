@@ -1,6 +1,7 @@
-package com.hafizdwp.explore_tokocrypto_coins_log
+package com.hafizdwp.explore_tokocrypto_coins_log.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,10 +18,10 @@ import com.hafizdwp.explore_tokocrypto_coins_log.data.ViewModelFactory
 
 
 inline fun <reified T : ViewModel> AppCompatActivity.obtainViewModel() =
-    ViewModelProviders.of(this, ViewModelFactory.getInstance(MyApplication.getInstance())).get(T::class.java)
+        ViewModelProviders.of(this, ViewModelFactory.getInstance(MyApplication.getInstance())).get(T::class.java)
 
 inline fun <reified VM : ViewModel> Fragment.obtainViewModel() =
-    ViewModelProviders.of(requireActivity(), ViewModelFactory.getInstance(requireActivity().application)).get(VM::class.java)
+        ViewModelProviders.of(requireActivity(), ViewModelFactory.getInstance(requireActivity().application)).get(VM::class.java)
 
 
 val gson by lazy { GsonBuilder().setPrettyPrinting().create() }
@@ -102,3 +103,7 @@ fun Fragment.toastSpammable(msg: String?,
 fun RecyclerView.defaultDivider(): DividerItemDecoration {
     return DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
 }
+
+//inline fun SharedPreferences.edit(action: SharedPreferences.() -> Unit) {
+//    action(this).apply()
+//}

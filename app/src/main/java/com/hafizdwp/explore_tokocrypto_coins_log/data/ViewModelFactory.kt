@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.hafizdwp.explore_tokocrypto_coins_log.MainViewModel
+import com.hafizdwp.explore_tokocrypto_coins_log.data.local.Preference
 import com.hafizdwp.explore_tokocrypto_coins_log.ktor.ktorHttpClient
 
 /**
@@ -37,9 +38,11 @@ class ViewModelFactory(private val repository: Repository) : ViewModelProvider.F
                 }
 
         private fun provideRepository(context: Context): Repository {
-            val database = Database.getInstance(context)
             val rds = RemoteDataSource(ktorHttpClient)
-            val lds = LocalDataSource.getInstance(database)
+
+            val database = Database.getInstance(context)
+            val pref = Preference.getInstance()
+            val lds = LocalDataSource.getInstance(database, pref)
 
             return Repository.getInstance(rds, lds)
         }

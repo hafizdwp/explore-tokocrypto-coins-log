@@ -1,21 +1,82 @@
 package com.hafizdwp.explore_tokocrypto_coins_log
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hafizdwp.explore_tokocrypto_coins_log.base.BaseActivity
+import com.hafizdwp.explore_tokocrypto_coins_log.util.defaultDivider
+import com.hafizdwp.explore_tokocrypto_coins_log.util.obtainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
 
+    override val layoutRes: Int
+        get() = R.layout.activity_main
+
     lateinit var mainAdapter: MainAdapter
+    lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        val viewModel by lazy { obtainViewModel<MainViewModel>() }
+        viewModel = obtainViewModel()
+        observe(viewModel)
 
-//        viewModel.start()
+        viewModel.getAllCoins()
+
+        mainAdapter = MainAdapter()
+        recycler_view.apply {
+            adapter = mainAdapter
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            addItemDecoration(defaultDivider())
+        }
+
+        swipe_refresh.setOnRefreshListener {
+            viewModel.getAllCoins()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.night_mode -> {
+                viewModel.switchNightMode()
+                recreate()
+            }
+        }
+        return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+
+        val nightModeMenu = menu?.findItem(R.id.night_mode)
+        val isNightMode = viewModel.getNightMode()
+        nightModeMenu?.setIcon(if (isNightMode) R.drawable.ic_day_mode else R.drawable.ic_night_mode)
+
+        return true
+    }
+
+    fun observe(viewModel: MainViewModel) {
+        viewModel.apply {
+            coins.observe {
+                mainAdapter.updateCoins(
+                        coins = it?.first ?: arrayListOf(),
+                        idrPrice = it?.second ?: 0.0
+                )
+            }
+
+            swipe.observe {
+                when (it) {
+                    true -> swipe_refresh.isRefreshing = true
+                    false -> swipe_refresh.isRefreshing = false
+                }
+            }
+        }
+    }
+
+    fun export2excel() {
+        //        viewModel.start()
 //        viewModel.print()
 
 //        val export = SQLiteToExcel(this, "database")
@@ -36,28 +97,5 @@ class MainActivity : BaseActivity() {
         //        btn_get.setOnClickListener {
 //            viewModel.getAllCoins()
 //        }
-
-        observe(viewModel)
-
-//        viewModel.getExchangeRates()
-        viewModel.getAllCoins()
-
-        mainAdapter = MainAdapter()
-        recycler_view.apply {
-            adapter = mainAdapter
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            addItemDecoration(defaultDivider())
-        }
-    }
-
-    fun observe(viewModel: MainViewModel) {
-        viewModel.apply {
-            coins.observe {
-                mainAdapter.updateCoins(
-                        coins = it?.first ?: arrayListOf(),
-                        idrPrice = it?.second ?: 0.0
-                )
-            }
-        }
     }
 }
